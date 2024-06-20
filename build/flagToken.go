@@ -13,7 +13,7 @@ type Token interface {
 
 type flagToken struct{}
 
-func (t flagToken) token() string {
+func (f flagToken) token() string {
 	var token string
 	flag.StringVar(&token, "tgtoken", "", "tg token here")
 	flag.Parse()

@@ -5,7 +5,7 @@
 package build
 
 func Init() (Token, BotUnit) {
-	var tgToken Token = flagToken{}
-	var myBot BotUnit
+	var tgToken Token = envToken{}
+	var myBot Unit = BotUnit{}
 	return tgToken, myBot
 }
