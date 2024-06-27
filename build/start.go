@@ -1,11 +1,19 @@
 // Запускаем бота
 package build
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
 
-func Start() {
-	//token, myBot := Init()
-	//fmt.Println("prt_token is " + token.token())
+	_ "github.com/mattn/go-sqlite3"
+)
+
+func Start() *sql.DB {
+	token, myBot, ptrDB := Init()
+	fmt.Println("prt_token is " + token.token())
+	myBot.mok()
 	//myBot.unit(token.token())
+	var db = ptrDB.connectToDBb()
 	fmt.Println("Я стартанул!")
+	return db
 }
