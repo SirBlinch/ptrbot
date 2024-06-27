@@ -4,7 +4,7 @@ package build
 
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
-type Unit interface {
+type _BotUnit interface {
 	unit(token string) *tgbotapi.BotAPI
 }
 

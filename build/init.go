@@ -4,8 +4,8 @@
 
 package build
 
-func Init() (Token, BotUnit) {
+func Init() (Token, _BotUnit) {
 	var tgToken Token = envToken{}
-	var myBot Unit = BotUnit{}
+	var myBot _BotUnit = BotUnit{}
 	return tgToken, myBot
 }
