@@ -15,6 +15,7 @@ type _BotUnit interface {
 
 type BotUnit struct{}
 
+// Создаём юнит бота
 func (b BotUnit) unit(token string) *tgbotapi.BotAPI {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {

@@ -1,34 +1,41 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 	"ptrbot/build"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	fmt.Println("Get started!!")
-	var db = build.Start()
+	var db, bot = build.Start()
 
-	db, err := sql.Open("sqlite3", "DB_1_0.db")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	bot.Debug = true
 
-	record := map[string]interface{}{
-		"name":     "Инструмент 1",
-		"quantity": 10,
-		"machine":  "Станок 1",
-	}
+	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-	// Вставка записи в таблицу
-	_, err = db.Exec("INSERT INTO Tools (name, quantity, machine) VALUES ($1, $2, $3)", record)
-	if err != nil {
-		panic(err)
-	}
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates := bot.GetUpdatesChan(u)
+
+	/*
+		db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
+		if err != nil {
+			panic(err)
+		}
+		defer db.Close()
+
+		// Вставка записи в таблицу
+
+		_, err = db.Exec("INSERT INTO Tools (name, quantity, machine) VALUES ('Фреза D10', '10', 'Фрезер')")
+		if err != nil {
+			panic(err)
+		}
+	*/
 
 }
 
