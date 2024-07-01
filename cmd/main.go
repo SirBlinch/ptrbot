@@ -2,30 +2,23 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"ptrbot/build"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	//"database/sql"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
 	fmt.Println("Get started!!")
-	var db, bot = build.Start()
+	var _, bot = build.Start()
 
-	bot.Debug = true
-
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates := bot.GetUpdatesChan(u)
+	api.chatManager(bot)
 
 	/*
 		db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 		if err != nil {
-			panic(err)
+		panic(err)
 		}
 		defer db.Close()
 
