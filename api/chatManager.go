@@ -6,7 +6,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func chatManager(bot *tgbotapi.BotAPI) {
+func ChatManager(bot *tgbotapi.BotAPI) {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -20,6 +20,16 @@ func chatManager(bot *tgbotapi.BotAPI) {
 		if update.Message == nil {
 			continue
 		}
+		var userInput = update.Message.Text
+		svitch(userInput){
+			case "/start","/Start": ToDo()
+			case "/Новая деталь" :
+			case "/Новый инструмент" :
+			case "" :
+			case "" :
+			case "" :
+			case "" :
+		}	
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, " Здрасте, я работаю!!")
 		bot.Send(msg)
