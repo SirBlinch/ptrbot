@@ -12,7 +12,7 @@ import (
 
 func main() {
 	fmt.Println("Get started!!")
-	var _, bot = build.Start()
+	var _, bot = build.Start() //db не использована
 
 	api.ChatManager(bot)
 
