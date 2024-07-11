@@ -18,6 +18,7 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 	//мониторим чат на входящие сообщения, если что-то пишут то в ответ отправляем своё сообщение
 	for update := range updates {
 		if update.Message == nil {
+			//мониторим на нажатия кнопок
 			if update.CallbackQuery == nil {
 				continue
 			}
@@ -27,8 +28,10 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 
 			switch update.CallbackQuery.Data {
 			case "lookPart":
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Перехожу в меню просмотра деталей")
+				msg.ReplyMarkup = partLookButtons()
 				bot.Send(msg)
+				partLook(bot, updates)
 			case "addPart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
 				bot.Send(msg)
@@ -58,31 +61,6 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 			bot.Send(msg)
 
 		}
-		/*
-			data := update.CallbackQuery.Data
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, data)
-			bot.Send(msg)
-
-			switch data {
-			case "lookPart":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
-				bot.Send(msg)
-			case "addPart":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
-				bot.Send(msg)
-			case "replacePart":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
-				bot.Send(msg)
-			case "lookTool":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
-				bot.Send(msg)
-			case "addTool":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
-				bot.Send(msg)
-			case "replaceTool":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
-				bot.Send(msg)
-			}*/
 
 	}
 
