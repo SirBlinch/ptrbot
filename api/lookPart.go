@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -23,7 +24,7 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 		if update.CallbackQuery != nil {
 			switch update.CallbackQuery.Data {
 			case "PartList":
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Смотрим список деталей!")
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Смотрим список деталей!\n Вот такие детали у нас есть:")
 				bot.Send(msg)
 				db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 				if err != nil {
@@ -48,47 +49,54 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 			case "SwitchPart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Смотрим конкретную деталь! \n Введите название детали.")
 				bot.Send(msg)
-				if update.Message != nil {
-					value := update.Message.Text
-					db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
-					if err != nil {
-						panic(err)
-					}
-					defer db.Close()
-
-					partDataRow, err := db.Query("SELECT * FROM Parts WHERE name = $1", value)
-					if err != nil {
-						panic(err)
-					}
-					defer partDataRow.Close()
-
-					columnsTitles, err := db.Query("PRAGMA TABLE_INFO(Parts)")
-					if err != nil {
-						panic(err)
-					}
-					defer columnsTitles.Close()
-
-					for columnsTitles.Next() {
-						a := 1
-						var columnTitle string
-						var partData string
-						err := columnsTitles.Scan(&columnTitle)
+				for update := range updates {
+					if update.Message != nil {
+						value := update.Message.Text
+						db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 						if err != nil {
 							panic(err)
 						}
-						err := partDataRow[a].Scan(&partData)
+						defer db.Close()
+
+						partDataRow, err := db.Query("SELECT * FROM Parts WHERE name = $1", value)
 						if err != nil {
 							panic(err)
 						}
-					}
+						defer partDataRow.Close()
 
-					for rows.Next() {
-						var dbValue string
-						err := rows.Scan(&dbValue)
+						columns, err := partDataRow.Columns()
 						if err != nil {
 							panic(err)
 						}
 
+						values := make([]interface{}, len(columns))
+						_values := make([]interface{}, len(columns))
+						for i := range columns {
+							_values[i] = &values[i]
+						}
+						for partDataRow.Next() {
+							err := partDataRow.Scan(_values...)
+							if err != nil {
+								panic(err)
+							}
+						}
+
+						if values[0] == nil {
+							msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Такой детали у нас нет, попробуйте еще раз!")
+							bot.Send(msg)
+							continue
+						}
+
+						for i, column := range columns {
+							value, noerr := values[i].(string)
+							if !noerr {
+								value = strconv.FormatInt(values[i].(int64), 10)
+							}
+							//var output string =  column + ": " + value
+							msg := tgbotapi.NewMessage(update.Message.Chat.ID, column+": "+value)
+							bot.Send(msg)
+						}
+						break
 					}
 				}
 			}
