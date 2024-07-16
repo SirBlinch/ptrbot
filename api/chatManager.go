@@ -33,11 +33,13 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 				bot.Send(msg)
 				partLook(bot, updates)
 			case "addPart":
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Перехожу в меню добавления детали.\nВведите название/номер детали.")
 				bot.Send(msg)
+				update.CallbackQuery.Data = addPart(bot, updates)
 			case "replacePart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
 				bot.Send(msg)
+				replacePart(bot, updates)
 			case "lookTool":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
 				bot.Send(msg)

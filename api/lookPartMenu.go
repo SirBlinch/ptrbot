@@ -13,7 +13,10 @@ func partLookButtons() tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData("Просмотр списка деталей", "PartList"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Посмотреть конкретную деталь", "SwitchPart"),
+			tgbotapi.NewInlineKeyboardButtonData("Посмотреть конкретную деталь", "СhoosePart"),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("Вернуться в главное меню", "ToStart"),
 		),
 	)
 	return numericKeyboard
@@ -46,7 +49,7 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 					bot.Send(msg)
 				}
 
-			case "SwitchPart":
+			case "СhoosePart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Смотрим конкретную деталь! \n Введите название детали.")
 				bot.Send(msg)
 				for update := range updates {
@@ -92,13 +95,19 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 							if !noerr {
 								value = strconv.FormatInt(values[i].(int64), 10)
 							}
-							//var output string =  column + ": " + value
+
 							msg := tgbotapi.NewMessage(update.Message.Chat.ID, column+": "+value)
 							bot.Send(msg)
 						}
 						break
 					}
 				}
+
+			case "ToStart":
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Возврат в главное меню. \nВыберите необходимую функцию.")
+				msg.ReplyMarkup = greeting()
+				bot.Send(msg)
+				return
 			}
 		}
 	}
