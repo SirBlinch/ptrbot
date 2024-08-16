@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"ptrbot/internal"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -28,7 +29,7 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 		if update.Message != nil {
 
 			userID = update.Message.From.ID
-			internal.usersManager(userID)
+			internal.UserManager(userID)
 
 			userInput := update.Message.Text
 
@@ -53,7 +54,7 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 			case "addPart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Перехожу в меню добавления детали.\nВведите название/номер детали.")
 				bot.Send(msg)
-				update.CallbackQuery.Data = addPart(bot, updates)
+				//update.CallbackQuery.Data = addPart(bot, updates)
 			case "replacePart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
 				bot.Send(msg)

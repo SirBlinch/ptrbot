@@ -12,7 +12,7 @@ type user struct {
 
 var onlineUsers []user
 
-func usersManager(userID int64) {
+func UserManager(userID int64) {
 	//проверяем список пользователей в сети
 	if checkOnline(userID) {
 		return

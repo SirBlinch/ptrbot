@@ -1,6 +1,5 @@
 /*
 package pkj
-
 import (
 	"log"
 	"os"

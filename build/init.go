@@ -4,11 +4,10 @@
 
 package build
 
-func Init() (Token, _BotUnit, _DbConnector) {
+func Init() (Token, _BotUnit) {
 	var tgToken Token = envToken{}
 	var myBot _BotUnit = BotUnit{}
-	var ptrDB _DbConnector = sqlite3DB{}
-	return tgToken, myBot, ptrDB
+	return tgToken, myBot
 }
 
 /*

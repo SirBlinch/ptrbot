@@ -1,7 +1,7 @@
 package api
 
 import (
-	"database/sql"
+	"ptrbot/build"
 	"strconv"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -29,11 +29,7 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 			case "PartList":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Смотрим список деталей!\n Вот такие детали у нас есть:")
 				bot.Send(msg)
-				db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
-				if err != nil {
-					panic(err)
-				}
-				defer db.Close()
+				db := build.ConnectToDBb()
 				rows, err := db.Query("SELECT name FROM Parts")
 				if err != nil {
 					panic(err)
@@ -55,11 +51,7 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 				for update := range updates {
 					if update.Message != nil {
 						value := update.Message.Text
-						db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
-						if err != nil {
-							panic(err)
-						}
-						defer db.Close()
+						db := build.ConnectToDBb()
 
 						partDataRow, err := db.Query("SELECT * FROM Parts WHERE name = $1", value)
 						if err != nil {
