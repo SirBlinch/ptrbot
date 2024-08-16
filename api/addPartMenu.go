@@ -1,4 +1,4 @@
-package api
+/*package api
 
 import (
 	"database/sql"
@@ -34,5 +34,4 @@ func addPart(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) string {
 
 		}
 	}
-
-}
+}*/

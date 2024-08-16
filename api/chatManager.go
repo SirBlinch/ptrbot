@@ -6,6 +6,13 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+/*
+Надо:
+- Список пользователей онлайн
+- канал для сообщений от пользователей
+- горутина для работы с пользователями
+*/
+
 func ChatManager(bot *tgbotapi.BotAPI) {
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
@@ -14,17 +21,28 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 	u.Timeout = 60
 
 	updates := bot.GetUpdatesChan(u)
-
-	//мониторим чат на входящие сообщения, если что-то пишут то в ответ отправляем своё сообщение
+	var userID int64
+	//мониторим чат на входящие сообщения
 	for update := range updates {
-		if update.Message == nil {
-			//мониторим на нажатия кнопок
-			if update.CallbackQuery == nil {
-				continue
-			}
+		//Проверяем на сообщения
+		if update.Message != nil {
 
-			//callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
-			//bot.Request(callback)
+			userID = update.Message.From.ID
+			internal.usersManager(userID)
+
+			userInput := update.Message.Text
+
+			switch userInput {
+			case "/start":
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Рады вас приветствовать в главном меню бота PTR33!\nВыберите необходимую вам функцию.")
+				msg.ReplyMarkup = greeting()
+				bot.Send(msg)
+			}
+		}
+		// Проверяем на нажатие кнопок
+		if update.CallbackQuery != nil {
+
+			userID = update.CallbackQuery.From.ID
 
 			switch update.CallbackQuery.Data {
 			case "lookPart":
@@ -51,19 +69,7 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 				bot.Send(msg)
 			}
 
-			continue
-		}
-
-		userInput := update.Message.Text
-
-		switch userInput {
-		case "/start":
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Рады вас приветствовать в главном меню бота PTR33!\nВыберите необходимую вам функцию.")
-			msg.ReplyMarkup = greeting()
-			bot.Send(msg)
-
 		}
 
 	}
-
 }
