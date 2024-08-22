@@ -2,28 +2,34 @@ package internal
 
 import (
 	"database/sql"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type user struct {
 	id          int64
 	state       int
 	permissions []string
+	userChanal  chan tgbotapi.Update
 }
 
 var onlineUsers []user
 
-func UserManager(userID int64) {
+//var userChanals []chan tgbotapi.Update
+
+func UserManager(userID int64, update tgbotapi.Update) {
 	//проверяем список пользователей в сети
-	if checkOnline(userID) {
+	if checkOnline(userID, update) {
 		return
 	}
 	//если нет в списке то добавляем
-	toOnline(userID)
+	toOnline(userID, update)
 }
 
-func checkOnline(userID int64) bool {
+func checkOnline(userID int64, update tgbotapi.Update) bool {
 	for _, _user := range onlineUsers {
 		if _user.id == userID {
+			_user.userChanal <- update
 			return true
 		}
 	}
@@ -31,7 +37,7 @@ func checkOnline(userID int64) bool {
 
 }
 
-func toOnline(userID int64) {
+func toOnline(userID int64, update tgbotapi.Update) {
 	db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 	if err != nil {
 		panic(err)
@@ -60,14 +66,17 @@ func toOnline(userID int64) {
 		}
 		newUser := user{id: userID, permissions: userPermissions}
 		onlineUsers = append(onlineUsers, newUser)
+		newUser.userChanal <- update
+		go Session(newUser)
 
 	} else { //Если нет - добавляем пользователя в базу и присваиваем базовый уровень доступа, оповещаем администратора
-		addUser(userID)
+		addUser(userID, update)
 	}
 
 }
 
-func addUser(userID int64) {
+func addUser(userID int64, update tgbotapi.Update) {
+
 	db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 	if err != nil {
 		panic(err)
@@ -82,4 +91,5 @@ func addUser(userID int64) {
 	if err != nil {
 		panic(err)
 	}
+	toOnline(userID, update)
 }

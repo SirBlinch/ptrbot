@@ -29,8 +29,38 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 		if update.Message != nil {
 
 			userID = update.Message.From.ID
-			internal.UserManager(userID)
+			internal.UserManager(userID, update)
 
+		}
+		// Проверяем на нажатие кнопок
+		if update.CallbackQuery != nil {
+
+			userID = update.CallbackQuery.From.ID
+			internal.UserManager(userID, update)
+
+		}
+
+	}
+}
+
+/*
+func ChatManager(bot *tgbotapi.BotAPI) {
+
+	log.Printf("Authorized on account %s", bot.Self.UserName)
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates := bot.GetUpdatesChan(u)
+	var userID int64
+	//мониторим чат на входящие сообщения
+	for update := range updates {
+		//Проверяем на сообщения
+		if update.Message != nil {
+
+			userID = update.Message.From.ID
+			internal.UserManager(userID)
+//////////////////////////////////////////////////////////////////////////////////////////
 			userInput := update.Message.Text
 
 			switch userInput {
@@ -44,7 +74,8 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 		if update.CallbackQuery != nil {
 
 			userID = update.CallbackQuery.From.ID
-
+			internal.UserManager(userID)
+//////////////////////////////////////////////////////////////////////////////////////////
 			switch update.CallbackQuery.Data {
 			case "lookPart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Перехожу в меню просмотра деталей")
@@ -74,3 +105,4 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 
 	}
 }
+*/
