@@ -4,7 +4,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func greeting() tgbotapi.InlineKeyboardMarkup {
+func Greeting() tgbotapi.InlineKeyboardMarkup {
 	var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Просмотр детали", "lookPart"),

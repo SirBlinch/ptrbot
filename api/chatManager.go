@@ -29,14 +29,14 @@ func ChatManager(bot *tgbotapi.BotAPI) {
 		if update.Message != nil {
 
 			userID = update.Message.From.ID
-			internal.UserManager(userID, update)
+			internal.UserManager(userID, update, bot)
 
 		}
 		// Проверяем на нажатие кнопок
 		if update.CallbackQuery != nil {
 
 			userID = update.CallbackQuery.From.ID
-			internal.UserManager(userID, update)
+			internal.UserManager(userID, update, bot)
 
 		}
 

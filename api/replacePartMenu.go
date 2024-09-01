@@ -5,7 +5,7 @@ import (
 	//"database/sql"
 )
 
-func replacePart(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
+func ReplacePart(bot *tgbotapi.BotAPI, user User) {
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			switch update.CallbackQuery.Data {

@@ -7,7 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func partLookButtons() tgbotapi.InlineKeyboardMarkup {
+func PartLookButtons() tgbotapi.InlineKeyboardMarkup {
 	var numericKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Просмотр списка деталей", "PartList"),
@@ -22,7 +22,7 @@ func partLookButtons() tgbotapi.InlineKeyboardMarkup {
 	return numericKeyboard
 }
 
-func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
+func PartLook(bot *tgbotapi.BotAPI, user User) {
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			switch update.CallbackQuery.Data {
@@ -97,7 +97,7 @@ func partLook(bot *tgbotapi.BotAPI, updates tgbotapi.UpdatesChannel) {
 
 			case "ToStart":
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Возврат в главное меню. \nВыберите необходимую функцию.")
-				msg.ReplyMarkup = greeting()
+				msg.ReplyMarkup = Greeting()
 				bot.Send(msg)
 				return
 			}

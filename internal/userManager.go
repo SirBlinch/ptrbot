@@ -6,24 +6,24 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type user struct {
+type User struct {
 	id          int64
 	state       int
 	permissions []string
 	userChanal  chan tgbotapi.Update
 }
 
-var onlineUsers []user
+var onlineUsers []User
 
 //var userChanals []chan tgbotapi.Update
 
-func UserManager(userID int64, update tgbotapi.Update) {
+func UserManager(userID int64, update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	//проверяем список пользователей в сети
 	if checkOnline(userID, update) {
 		return
 	}
 	//если нет в списке то добавляем
-	toOnline(userID, update)
+	toOnline(userID, update, bot)
 }
 
 func checkOnline(userID int64, update tgbotapi.Update) bool {
@@ -37,7 +37,7 @@ func checkOnline(userID int64, update tgbotapi.Update) bool {
 
 }
 
-func toOnline(userID int64, update tgbotapi.Update) {
+func toOnline(userID int64, update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 	if err != nil {
 		panic(err)
@@ -64,18 +64,18 @@ func toOnline(userID int64, update tgbotapi.Update) {
 			}
 			userPermissions = append(userPermissions, permission)
 		}
-		newUser := user{id: userID, permissions: userPermissions}
+		newUser := User{id: userID, permissions: userPermissions}
 		onlineUsers = append(onlineUsers, newUser)
 		newUser.userChanal <- update
-		go Session(newUser)
+		go Session(newUser, bot)
 
 	} else { //Если нет - добавляем пользователя в базу и присваиваем базовый уровень доступа, оповещаем администратора
-		addUser(userID, update)
+		addUser(userID, update, bot)
 	}
 
 }
 
-func addUser(userID int64, update tgbotapi.Update) {
+func addUser(userID int64, update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 
 	db, err := sql.Open("sqlite3", "D:\\FromFlashCard\\FromLinux\\GO\\PTR_Bot\\DB_1_0.db")
 	if err != nil {
@@ -91,5 +91,5 @@ func addUser(userID int64, update tgbotapi.Update) {
 	if err != nil {
 		panic(err)
 	}
-	toOnline(userID, update)
+	toOnline(userID, update, bot)
 }
