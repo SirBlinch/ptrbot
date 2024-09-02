@@ -1,4 +1,4 @@
-package api
+package internal
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -6,13 +6,12 @@ import (
 )
 
 func ReplacePart(bot *tgbotapi.BotAPI, user User) {
-	for update := range updates {
-		if update.CallbackQuery != nil {
-			switch update.CallbackQuery.Data {
-			case "replaceName":
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Оно работает!")
-				bot.Send(msg)
-			}
+	update := <-user.userChanal
+	if update.CallbackQuery != nil {
+		switch update.CallbackQuery.Data {
+		case "replaceName":
+			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Оно работает!")
+			bot.Send(msg)
 		}
 	}
 }

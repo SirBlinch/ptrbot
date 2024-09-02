@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"ptrbot/api"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -18,7 +17,7 @@ func Session(user User, bot *tgbotapi.BotAPI) {
 		switch userInput {
 		case "/start":
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Рады вас приветствовать в главном меню бота PTR33!\nВыберите необходимую вам функцию.")
-			msg.ReplyMarkup = api.Greeting()
+			msg.ReplyMarkup = Greeting()
 			bot.Send(msg)
 		}
 	}
@@ -28,9 +27,9 @@ func Session(user User, bot *tgbotapi.BotAPI) {
 		switch update.CallbackQuery.Data {
 		case "lookPart":
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Перехожу в меню просмотра деталей")
-			msg.ReplyMarkup = api.PartLookButtons()
+			msg.ReplyMarkup = PartLookButtons()
 			bot.Send(msg)
-			api.PartLook(bot, user)
+			PartLook(bot, user)
 		case "addPart":
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Перехожу в меню добавления детали.\nВведите название/номер детали.")
 			bot.Send(msg)
@@ -38,7 +37,7 @@ func Session(user User, bot *tgbotapi.BotAPI) {
 		case "replacePart":
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
 			bot.Send(msg)
-			api.ReplacePart(bot, user)
+			ReplacePart(bot, user)
 		case "lookTool":
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "К сожалению эта функция пока не реализована.")
 			bot.Send(msg)
